@@ -2,8 +2,8 @@ const express = require('express');
 const foodModel = require('./food-model');
 const app = express();
 
-// Use the environment's port or default to 3000
-const PORT = process.env.PORT || 3000;
+// Use the environment's port or default to 5000
+const PORT = process.env.PORT || 5000;
 
 // Setup JSON middleware to handle incoming requests
 app.use(express.json());
@@ -29,7 +29,6 @@ app.use((req, res) => {
 module.exports = app;
 
 if (require.main === module) {
-    const PORT = process.env.PORT || 3000;
     app.listen(PORT, () => {
         console.log(`Server is running on port ${PORT}`);
     });
