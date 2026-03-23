@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Food POC</title>
     <style>
-        /* Minimal Styling */
-        body { font-family: sans-serif; margin: 40px; color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-        th { background-color: #f4f4f4; }
-        tr:nth-child(even) { background-color: #fafafa; }
+     /* Minimal Styling */
+     body { font-family: sans-serif; margin: 40px; color: #333; }
+     table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+     th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+     th { background-color: #f4f4f4; }
+     tr:nth-child(even) { background-color: #fafafa; }
     </style>
-</head>
-<body>
+  </head>
+  <body>
 
     <h1>Menu Items</h1>
     <div id="loading">Loading menu...</div>
 
     <table id="food-table" style="display: none;">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Product Name</th>
-                <th>Price</th>
-            </tr>
-        </thead>
-        <tbody id="food-body">
-            </tbody>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Product Name</th>
+          <th>Price</th>
+        </tr>
+      </thead>
+      <tbody id="food-body">
+      </tbody>
     </table>
 
     <script>
@@ -64,5 +64,11 @@
      // Run the function when the page loads
      fetchFoods();
     </script>
-</body>
+
+    <footer style="margin-top: 40px; border-top: 1px solid #ddd; padding-top: 10px;">
+      <p style="font-style: italic; color: #555;">
+        Disclaimer: This app is ONLY for demonstrating a student’s web development skills.
+      </p>
+    </footer>
+  </body>
 </html>
