@@ -15,7 +15,6 @@ const productSchema = new mongoose.Schema({
   productId: {
     type: String,
     required: true,
-    unique: true, // Ensures no two products have the same ID
     trim: true
   },
   productName: {
@@ -31,6 +30,9 @@ const productSchema = new mongoose.Schema({
 }, {
   timestamps: true // Automatically manages createdAt and updatedAt fields
 });
+
+// This tells MongoDB that the combination of storeId AND productId must be unique
+productSchema.index({ storeId: 1, productId: 1 }, { unique: true });
 
 // Export the Product model
 // Mongoose will automatically look for a collection named 'products' in MongoDB Atlas

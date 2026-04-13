@@ -1,120 +1,121 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<title>E-commerce Product CRUD Tester</title>
-<style>
-  body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
-  h2 { margin-top: 40px; color: #333; }
-  form { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
-  label { display: block; margin: 8px 0 2px; font-weight: bold; }
-  input, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
-  button { background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
-  button:hover { background-color: #0056b3; }
-  pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow: auto; min-height: 50px; }
-</style>
-</head>
-<body>
-<h1>Product Management System</h1>
+  <head>
+    <meta charset="UTF-8">
+    <title>E-commerce Product CRUD Tester</title>
+    <style>
+     body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+     h2 { margin-top: 40px; color: #333; }
+     form { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
+     label { display: block; margin: 8px 0 2px; font-weight: bold; }
+     input, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+     button { background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+     button:hover { background-color: #0056b3; }
+     pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow: auto; min-height: 50px; }
+    </style>
+  </head>
+  <body>
+    <h1>Product Management System</h1>
 
-<h2>Create Product</h2>
-<form id="createProductForm">
-  <label>Store ID:</label><input type="text" id="createStoreId" required>
-  <label>Store Name:</label><input type="text" id="createStoreName" required>
-  <label>Product ID:</label><input type="text" id="createProductId" required>
-  <label>Product Name:</label><input type="text" id="createProductName" required>
-  <label>Price:</label><input type="number" step="0.01" id="createPrice" required>
-  <button type="submit">Add Product</button>
-</form>
+    <h2>Create Product</h2>
+    <form id="createProductForm">
+      <label>Store ID:</label><input type="text" id="createStoreId" required>
+      <label>Store Name:</label><input type="text" id="createStoreName" required>
+      <label>Product ID:</label><input type="text" id="createProductId" required>
+      <label>Product Name:</label><input type="text" id="createProductName" required>
+      <label>Price:</label><input type="number" step="0.01" id="createPrice" required>
+      <button type="submit">Add Product</button>
+    </form>
 
-<h2>Get Product</h2>
-<form id="getProductForm">
-  <label>MongoDB _id:</label><input type="text" id="getMongoId" placeholder="Paste the _id from the response" required>
-  <button type="submit">Fetch Product</button>
-</form>
+    <h2>Get Product</h2>
+    <form id="getProductForm">
+      <label>MongoDB _id:</label>
+      <input type="text" id="getMongoId" placeholder="Paste the _id from the response" required>
+      <button type="submit">Fetch Product</button>
+    </form>
 
-<h2>Update Product Price</h2>
-<form id="updateProductForm">
-  <label>MongoDB _id:</label><input type="text" id="updateMongoId" required>
-  <label>New Price:</label><input type="number" step="0.01" id="updatePrice" required>
-  <button type="submit">Update Price</button>
-</form>
+    <h2>Update Product Price</h2>
+    <form id="updateProductForm">
+      <label>MongoDB _id:</label><input type="text" id="updateMongoId" required>
+      <label>New Price:</label><input type="number" step="0.01" id="updatePrice" required>
+      <button type="submit">Update Price</button>
+    </form>
 
-<h2>Delete Product</h2>
-<form id="deleteProductForm">
-  <label>MongoDB _id:</label><input type="text" id="deleteMongoId" required>
-  <button type="submit">Delete Product</button>
-</form>
+    <h2>Delete Product</h2>
+    <form id="deleteProductForm">
+      <label>MongoDB _id:</label><input type="text" id="deleteMongoId" required>
+      <button type="submit">Delete Product</button>
+    </form>
 
-<h2>Response</h2>
-<pre id="jsonOutput">{}</pre>
+    <h2>Response</h2>
+    <pre id="jsonOutput">{}</pre>
 
-<script>
- const output = document.getElementById('jsonOutput');
- const apiBase = 'http://localhost:3000';
+    <script>
+     const output = document.getElementById('jsonOutput');
+     const apiBase = 'http://localhost:3000';
 
- function showJSON(data) {
-   output.textContent = JSON.stringify(data, null, 2);
- }
-
- async function handleFetch(url, options) {
-   try {
-     const res = await fetch(url, options);
-     const text = await res.text();
-     try {
-       const data = JSON.parse(text);
-       showJSON(data);
-     } catch {
-       showJSON({ status: res.status, data: text });
+     function showJSON(data) {
+       output.textContent = JSON.stringify(data, null, 2);
      }
-   } catch (err) {
-     showJSON({ error: err.message });
-   }
- }
 
- // CREATE
- document.getElementById('createProductForm').addEventListener('submit', e => {
-   e.preventDefault();
-   const body = {
-     storeId: document.getElementById('createStoreId').value,
-     storeName: document.getElementById('createStoreName').value,
-     productId: document.getElementById('createProductId').value,
-     productName: document.getElementById('createProductName').value,
-     price: parseFloat(document.getElementById('createPrice').value)
-   };
-   handleFetch(`${apiBase}/products`, {
-     method: 'POST',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify(body)
-   });
- });
+     async function handleFetch(url, options) {
+       try {
+         const res = await fetch(url, options);
+         const text = await res.text();
+         try {
+           const data = JSON.parse(text);
+           showJSON(data);
+         } catch {
+           showJSON({ status: res.status, data: text });
+         }
+       } catch (err) {
+         showJSON({ error: err.message });
+       }
+     }
 
- // READ
- document.getElementById('getProductForm').addEventListener('submit', e => {
-   e.preventDefault();
-   const id = document.getElementById('getMongoId').value;
-   handleFetch(`${apiBase}/products/${id}`);
- });
+     // CREATE
+     document.getElementById('createProductForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const body = {
+         storeId: document.getElementById('createStoreId').value,
+         storeName: document.getElementById('createStoreName').value,
+         productId: document.getElementById('createProductId').value,
+         productName: document.getElementById('createProductName').value,
+         price: parseFloat(document.getElementById('createPrice').value)
+       };
+       handleFetch(`${apiBase}/products`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify(body)
+       });
+     });
 
- // UPDATE
- document.getElementById('updateProductForm').addEventListener('submit', e => {
-   e.preventDefault();
-   const id = document.getElementById('updateMongoId').value;
-   const price = parseFloat(document.getElementById('updatePrice').value);
+     // READ
+     document.getElementById('getProductForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('getMongoId').value;
+       handleFetch(`${apiBase}/products/${id}`);
+     });
 
-   handleFetch(`${apiBase}/products/${id}`, {
-     method: 'PUT',
-     headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ price })
-   });
- });
+     // UPDATE
+     document.getElementById('updateProductForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('updateMongoId').value;
+       const price = parseFloat(document.getElementById('updatePrice').value);
 
- // DELETE
- document.getElementById('deleteProductForm').addEventListener('submit', e => {
-   e.preventDefault();
-   const id = document.getElementById('deleteMongoId').value;
-   handleFetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
- });
-</script>
-</body>
+       handleFetch(`${apiBase}/products/${id}`, {
+         method: 'PUT',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ price })
+       });
+     });
+
+     // DELETE
+     document.getElementById('deleteProductForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('deleteMongoId').value;
+       handleFetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
+     });
+    </script>
+  </body>
 </html>
