@@ -2,44 +2,48 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>REST API CRUD Tester</title>
+<title>E-commerce Product CRUD Tester</title>
 <style>
-  body { font-family: Arial, sans-serif; margin: 20px; }
-  h2 { margin-top: 40px; }
-  form { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
-  label { display: block; margin: 5px 0 2px; }
-  input, button { margin: 5px 0; padding: 5px; }
-  pre { background: #f4f4f4; padding: 10px; overflow: auto; }
+  body { font-family: Arial, sans-serif; margin: 20px; max-width: 800px; }
+  h2 { margin-top: 40px; color: #333; }
+  form { margin-bottom: 20px; padding: 15px; border: 1px solid #ccc; border-radius: 8px; background: #fafafa; }
+  label { display: block; margin: 8px 0 2px; font-weight: bold; }
+  input, button { margin: 5px 0; padding: 8px; width: 100%; box-sizing: border-box; }
+  button { background-color: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px; }
+  button:hover { background-color: #0056b3; }
+  pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow: auto; min-height: 50px; }
 </style>
 </head>
 <body>
-<h1>REST API CRUD Tester</h1>
+<h1>Product Management System</h1>
 
-<h2>Create User</h2>
-<form id="createUserForm">
-  <label>Name:</label><input type="text" id="createName" required>
-  <label>Email:</label><input type="email" id="createEmail" required>
-  <button type="submit">Create User</button>
+<h2>Create Product</h2>
+<form id="createProductForm">
+  <label>Store ID:</label><input type="text" id="createStoreId" required>
+  <label>Store Name:</label><input type="text" id="createStoreName" required>
+  <label>Product ID:</label><input type="text" id="createProductId" required>
+  <label>Product Name:</label><input type="text" id="createProductName" required>
+  <label>Price:</label><input type="number" step="0.01" id="createPrice" required>
+  <button type="submit">Add Product</button>
 </form>
 
-<h2>Get User</h2>
-<form id="getUserForm">
-  <label>User ID:</label><input type="text" id="getUserId" required>
-  <button type="submit">Fetch User</button>
+<h2>Get Product</h2>
+<form id="getProductForm">
+  <label>MongoDB _id:</label><input type="text" id="getMongoId" placeholder="Paste the _id from the response" required>
+  <button type="submit">Fetch Product</button>
 </form>
 
-<h2>Update User</h2>
-<form id="updateUserForm">
-  <label>User ID:</label><input type="text" id="updateUserId" required>
-  <label>New Name:</label><input type="text" id="updateName">
-  <label>New Email:</label><input type="email" id="updateEmail">
-  <button type="submit">Update User</button>
+<h2>Update Product Price</h2>
+<form id="updateProductForm">
+  <label>MongoDB _id:</label><input type="text" id="updateMongoId" required>
+  <label>New Price:</label><input type="number" step="0.01" id="updatePrice" required>
+  <button type="submit">Update Price</button>
 </form>
 
-<h2>Delete User</h2>
-<form id="deleteUserForm">
-  <label>User ID:</label><input type="text" id="deleteUserId" required>
-  <button type="submit">Delete User</button>
+<h2>Delete Product</h2>
+<form id="deleteProductForm">
+  <label>MongoDB _id:</label><input type="text" id="deleteMongoId" required>
+  <button type="submit">Delete Product</button>
 </form>
 
 <h2>Response</h2>
@@ -58,11 +62,9 @@
      const res = await fetch(url, options);
      const text = await res.text();
      try {
-       // Try parsing JSON
        const data = JSON.parse(text);
        showJSON(data);
      } catch {
-       // If not JSON, show as text
        showJSON({ status: res.status, data: text });
      }
    } catch (err) {
@@ -71,42 +73,47 @@
  }
 
  // CREATE
- document.getElementById('createUserForm').addEventListener('submit', e => {
+ document.getElementById('createProductForm').addEventListener('submit', e => {
    e.preventDefault();
-   const name = document.getElementById('createName').value;
-   const email = document.getElementById('createEmail').value;
-   handleFetch(`${apiBase}/users`, {
+   const body = {
+     storeId: document.getElementById('createStoreId').value,
+     storeName: document.getElementById('createStoreName').value,
+     productId: document.getElementById('createProductId').value,
+     productName: document.getElementById('createProductName').value,
+     price: parseFloat(document.getElementById('createPrice').value)
+   };
+   handleFetch(`${apiBase}/products`, {
      method: 'POST',
      headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ name, email })
+     body: JSON.stringify(body)
    });
  });
 
  // READ
- document.getElementById('getUserForm').addEventListener('submit', e => {
+ document.getElementById('getProductForm').addEventListener('submit', e => {
    e.preventDefault();
-   const id = document.getElementById('getUserId').value;
-   handleFetch(`${apiBase}/users/${id}`);
+   const id = document.getElementById('getMongoId').value;
+   handleFetch(`${apiBase}/products/${id}`);
  });
 
  // UPDATE
- document.getElementById('updateUserForm').addEventListener('submit', e => {
+ document.getElementById('updateProductForm').addEventListener('submit', e => {
    e.preventDefault();
-   const id = document.getElementById('updateUserId').value;
-   const name = document.getElementById('updateName').value;
-   const email = document.getElementById('updateEmail').value;
-   handleFetch(`${apiBase}/users/${id}`, {
+   const id = document.getElementById('updateMongoId').value;
+   const price = parseFloat(document.getElementById('updatePrice').value);
+
+   handleFetch(`${apiBase}/products/${id}`, {
      method: 'PUT',
      headers: { 'Content-Type': 'application/json' },
-     body: JSON.stringify({ name, email })
+     body: JSON.stringify({ price })
    });
  });
 
  // DELETE
- document.getElementById('deleteUserForm').addEventListener('submit', e => {
+ document.getElementById('deleteProductForm').addEventListener('submit', e => {
    e.preventDefault();
-   const id = document.getElementById('deleteUserId').value;
-   handleFetch(`${apiBase}/users/${id}`, { method: 'DELETE' });
+   const id = document.getElementById('deleteMongoId').value;
+   handleFetch(`${apiBase}/products/${id}`, { method: 'DELETE' });
  });
 </script>
 </body>

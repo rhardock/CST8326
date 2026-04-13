@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>REST API CRUD Tester</title>
+    <style>
+     body { font-family: Arial, sans-serif; margin: 20px; }
+     h2 { margin-top: 40px; }
+     form { margin-bottom: 20px; padding: 10px; border: 1px solid #ccc; }
+     label { display: block; margin: 5px 0 2px; }
+     input, button { margin: 5px 0; padding: 5px; }
+     pre { background: #f4f4f4; padding: 10px; overflow: auto; }
+    </style>
+  </head>
+  <body>
+    <h1>REST API CRUD Tester</h1>
+
+    <h2>Create User</h2>
+    <form id="createUserForm">
+      <label>Name:</label><input type="text" id="createName" required>
+      <label>Email:</label><input type="email" id="createEmail" required>
+      <button type="submit">Create User</button>
+    </form>
+
+    <h2>Get User</h2>
+    <form id="getUserForm">
+      <label>User ID:</label><input type="text" id="getUserId" required>
+      <button type="submit">Fetch User</button>
+    </form>
+
+    <h2>Update User</h2>
+    <form id="updateUserForm">
+      <label>User ID:</label><input type="text" id="updateUserId" required>
+      <label>New Name:</label><input type="text" id="updateName">
+      <label>New Email:</label><input type="email" id="updateEmail">
+      <button type="submit">Update User</button>
+    </form>
+
+    <h2>Delete User</h2>
+    <form id="deleteUserForm">
+      <label>User ID:</label><input type="text" id="deleteUserId" required>
+      <button type="submit">Delete User</button>
+    </form>
+
+    <h2>Response</h2>
+    <pre id="jsonOutput">{}</pre>
+
+    <script>
+     const output = document.getElementById('jsonOutput');
+     const apiBase = 'http://localhost:3000';
+
+     function showJSON(data) {
+       output.textContent = JSON.stringify(data, null, 2);
+     }
+
+     async function handleFetch(url, options) {
+       try {
+         const res = await fetch(url, options);
+         const text = await res.text();
+         try {
+           // Try parsing JSON
+           const data = JSON.parse(text);
+           showJSON(data);
+         } catch {
+           // If not JSON, show as text
+           showJSON({ status: res.status, data: text });
+         }
+       } catch (err) {
+         showJSON({ error: err.message });
+       }
+     }
+
+     // CREATE
+     document.getElementById('createUserForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const name = document.getElementById('createName').value;
+       const email = document.getElementById('createEmail').value;
+       handleFetch(`${apiBase}/users`, {
+         method: 'POST',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ name, email })
+       });
+     });
+
+     // READ
+     document.getElementById('getUserForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('getUserId').value;
+       handleFetch(`${apiBase}/users/${id}`);
+     });
+
+     // UPDATE
+     document.getElementById('updateUserForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('updateUserId').value;
+       const name = document.getElementById('updateName').value;
+       const email = document.getElementById('updateEmail').value;
+       handleFetch(`${apiBase}/users/${id}`, {
+         method: 'PUT',
+         headers: { 'Content-Type': 'application/json' },
+         body: JSON.stringify({ name, email })
+       });
+     });
+
+     // DELETE
+     document.getElementById('deleteUserForm').addEventListener('submit', e => {
+       e.preventDefault();
+       const id = document.getElementById('deleteUserId').value;
+       handleFetch(`${apiBase}/users/${id}`, { method: 'DELETE' });
+     });
+    </script>
+  </body>
+</html>
