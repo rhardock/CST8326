@@ -71,4 +71,16 @@ app.delete('/products/:id', async (req, res) => {
 
 // Start server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+const server = app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+}).on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`Port ${PORT} is already in use or reserved by Windows.`);
+    console.error(`Try running: net stop winnat (as Admin) or change the port.`);
+    process.exit(1); // Stop the process so you aren't left wondering
+  } else {
+    console.error('Server error:', err);
+    process.exit(1);
+  }
+});
