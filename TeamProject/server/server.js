@@ -1,5 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const axios = require('axios');
+
+require('dotenv').config();
+const TEAMMATE_URL = process.env.TEAMMATE_API_URL;
+
 const db = require('../models/db')
 const Product = require('../models/product');
 
@@ -33,6 +38,45 @@ app.get('/products', async (req, res) => {
     res.json(products);
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+});
+
+// Read the teammate's products
+app.get('/teammate-products', async (req, res) => {
+  try {
+    // Use the variable here
+    const response = await axios.get(TEAMMATE_URL);
+    res.json(response.data);
+  } catch (error) {
+    console.error("Error fetching teammate data:", error.message);
+    res.status(500).json({ error: "Teammate's store is offline" });
+  }
+});
+
+// Get all products across both mine and teammate's store
+app.get('/all-products', async (req, res) => {
+  try {
+    // 1. Fetch your data from your MongoDB
+    const myProducts = await Product.find();
+
+    // 2. Fetch teammate's data with its own error handling
+    try {
+      const response = await axios.get(TEAMMATE_URL, { timeout: 5000 }); // 5-second timeout
+      teammateProducts = response.data;
+    } catch (teamErr) {
+      console.error("Teammate store offline or timed out:", teamErr.message);
+      // We don't throw an error here; teammateProducts remains an empty array []
+    }
+
+    // 3. Combine the two arrays
+    const combined = [...myProducts, ...teammateProducts];
+
+    // 4. Send the consolidated JSON
+    res.json(combined);
+
+  } catch (err) {
+    console.error("Aggregation Error:", err.message);
+    res.status(500).json({ error: "Failed to consolidate store data" });
   }
 });
 

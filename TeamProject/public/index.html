@@ -13,15 +13,23 @@
      button:hover { background-color: #0056b3; }
      .secondary-btn { background-color: #28a745; }
      .secondary-btn:hover { background-color: #218838; }
+     .teammate-btn { background-color: #6c757d; }
+     .teammate-btn:hover { background-color: #5a6268; }
+     .consolidated-btn { background-color: #fd7e14; }
+     .consolidated-btn:hover { background-color: #e8590c; }
+
      pre { background: #f4f4f4; padding: 10px; border: 1px solid #ddd; overflow: auto; min-height: 50px; }
     </style>
   </head>
   <body>
     <h1>Product Management System</h1>
 
-    <h2>All Products</h2>
+
+    <h2>Product Retrieval Options</h2>
     <div class="action-box">
-      <button id="getAllBtn" class="secondary-btn">Fetch All Products</button>
+      <button id="getAllBtn" class="secondary-btn">Fetch My Store</button>
+      <button id="getTeammateBtn" class="teammate-btn">Fetch Teammate Store</button>
+      <button id="getConsolidatedBtn" class="consolidated-btn"> Fetch All (Consolidated)</button>
     </div>
 
     <h2>Create Product</h2>
@@ -80,9 +88,19 @@
        }
      }
 
-     // GET ALL
+     // 1. GET MY PRODUCTS ONLY
      document.getElementById('getAllBtn').addEventListener('click', () => {
        handleFetch(`${apiBase}/products`);
+     });
+
+     // 2. GET TEAMMATE PRODUCTS ONLY
+     document.getElementById('getTeammateBtn').addEventListener('click', () => {
+       handleFetch(`${apiBase}/teammate-products`);
+     });
+
+     // 3. GET CONSOLIDATED (BOTH STORES)
+     document.getElementById('getConsolidatedBtn').addEventListener('click', () => {
+       handleFetch(`${apiBase}/all-products`);
      });
 
      // CREATE
