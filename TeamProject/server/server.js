@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
+const mongoose = require('mongoose');
 
 require('dotenv').config();
 const TEAMMATE_URL = process.env.TEAMMATE_API_URL;
@@ -125,12 +126,24 @@ if (require.main === module) {
   }).on('error', (err) => {
     if (err.code === 'EADDRINUSE') {
       console.error(`Port ${PORT} is already in use or reserved by Windows.`);
-      console.error(`Try running: net stop winnat (as Admin) or change the port.`);
-      process.exit(1);
     } else {
       console.error('Server error:', err);
-      process.exit(1);
     }
+
+    server.close(async () => {
+      console.log('Server stopped.');
+      try {
+        // 1. Close the Database Connection properly
+        if (mongoose.connection.readyState !== 0) {
+          await mongoose.disconnect();
+          console.log('Database connection closed gracefully.');
+        }
+      } catch (err) {
+        console.error('Error during cleanup:', err);
+      } finally {
+        console.log('--- All resources released ---');
+      }
+    });
   });
 }
 

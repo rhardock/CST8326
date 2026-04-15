@@ -1,8 +1,10 @@
 const request = require('supertest');
 const { expect } = require('chai');
 
-// Make sure this matches your server's port (usually 3000)
-const SERVER_URL = 'http://localhost:3000';
+// Make sure this matches your server's port
+const PORT = process.env.PORT || 3000;
+
+const SERVER_URL = `http://localhost:${PORT}`;
 const STUDENT_EMAIL = "hard0261@algonquinlive.com";
 
 describe('Products API Integration', () => {

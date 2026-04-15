@@ -3,24 +3,27 @@ const mongoose = require('mongoose');
 
 const app = require('./server/server'); // import Express app
 
-// Use environment variable PORT or default to 3000
-// A different port than the default server is used to avoid conflicts if the server
-// is already running separately.
-const PORT = process.env.PORT || 3000;
-
 async function run() {
   let server;
 
-  console.log(`Starting server on port ${PORT}...`);
+  console.log(`Starting server...`);
 
-  // Start the server programmatically
-  server = app.listen(PORT, async () => {
-    console.log(`Server running on port ${PORT}`);
+  // Start the server programmatically -- Port 0 means OS dynamically assigns an available port
+  // this helps guarantee that our tests can run separately from the server instance, if running
+  server = app.listen(0, () => {
+    // CAPTURE the port assigned by the OS
+    const assignedPort = server.address().port;
+    console.log(`Server running on port ${assignedPort}`);
 
     console.log('Running tests...');
 
     // Run tests via npm
-    exec('npm test', (err, stdout, stderr) => {
+    exec('npm test', {
+      env: {
+        ...process.env,
+        PORT: assignedPort
+      }
+    }, (err, stdout, stderr) => {
       processOutput(stdout);
       if (err) {
         processOutput(stderr);
@@ -31,9 +34,7 @@ async function run() {
         console.log('Server stopped after tests.');
 
         try {
-          // 1. Close the Database Connection properly
           if (mongoose.connection.readyState !== 0) {
-            // This triggers your "Mongoose disconnected" logs
             await mongoose.disconnect();
             console.log('Database connection closed gracefully.');
           }
@@ -43,10 +44,9 @@ async function run() {
           console.log('--- All resources released ---');
         }
       });
-    });
-  });
-
-};
+    }); // End of exec
+  }); // End of server.listen
+} // End of run function
 
 function processOutput(output) {
   const lines = output.split('\n');
