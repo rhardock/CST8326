@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-// Option 1: Choose DB by environment variable
+// Choose DB by environment variable or to local MongoDB if not set
 const dbURI = process.env.DB_URI || 'mongodb://localhost/testdb';
 
 console.log('Connecting to MongoDB at ' + dbURI);
