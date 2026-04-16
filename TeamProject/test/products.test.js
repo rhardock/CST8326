@@ -51,8 +51,8 @@ describe('Products API Integration', () => {
         expect(res.body[0]).to.have.property('price');
       }
 
-      // make sure have at least 5 products in the store - teammate store only has 4 products
-      expect(res.body.length).to.be.at.least(4);
+      // make sure have at least 5 products in the store
+      expect(res.body.length).to.be.at.least(5);
       expect(res.status).to.equal(200);
 
       console.log(`${STUDENT_EMAIL} - ${testName} - 200 - PASSED`);
